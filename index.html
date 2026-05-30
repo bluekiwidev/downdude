@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GekoHosting – Temporarily Down</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div id="scroll-indicator"></div>
+  
+  <!-- Status Banner -->
+  <div class="banner">
+    <div class="banner-content">
+      <i class="fas fa-tools banner-icon"></i>
+      <div>
+        <div class="banner-title">WE ARE DOWN!</div>
+        <div class="banner-subtitle">Currently fixing the website - hang tight!</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="cinema-container">
+    <div class="status-badge">
+      <i class="fas fa-circle status-dot"></i>
+      <span>Everything is on fire rn... Or we didnt pay our bills</span>
+    </div>
+    
+    <h2>Enjoy the show while you wait</h2>
+    <p class="subtitle">We're working hard (or hardly working) to get things back up and running</p>
+    
+    <div class="meme-wrapper">
+      <div class="meme-header">
+        <button id="new-meme" class="btn">New Meme</button>
+      </div>
+      <div class="meme-content">
+        <img id="meme-img" src="" alt="meme image" />
+        <div class="meme-info">
+          <h3 id="meme-title">Loading...</h3>
+          <div class="meme-meta">
+            <span id="meme-author"></span>
+            <a id="meme-post" href="#" target="_blank" rel="noopener noreferrer">View Source</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="info-footer">
+      <div class="info-item">
+        <i class="fas fa-clock"></i>
+        <span>Expected: Soon™</span>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-server"></i>
+        <span>Status: Under Maintenance</span>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-wrench"></i>
+        <span>Working on it!</span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Floating Background Elements -->
+  <div class="bg-decoration bg-decoration-1"></div>
+  <div class="bg-decoration bg-decoration-2"></div>
+  
+  <script>
+    // Scroll progress indicator
+    window.addEventListener('scroll', () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('scroll-indicator').style.width = scrolled + '%';
+    });
+
+    // Meme API integration
+    async function fetchMeme() {
+      const titleEl = document.getElementById('meme-title');
+      const imgEl = document.getElementById('meme-img');
+      const postEl = document.getElementById('meme-post');
+      const authorEl = document.getElementById('meme-author');
+
+      titleEl.textContent = 'Loading...';
+      imgEl.src = '';
+      postEl.href = '#';
+      authorEl.textContent = '';
+
+      try {
+        const res = await fetch('https://meme-api.com/gimme');
+        if (!res.ok) throw new Error('Network response was not ok');
+        const data = await res.json();
+
+        titleEl.textContent = data.title || 'Untitled';
+        imgEl.src = data.url || '';
+        imgEl.alt = data.title || 'meme image';
+        postEl.href = data.postLink || '#';
+        authorEl.textContent = data.author ? `by ${data.author}` : data.subreddit ? `r/${data.subreddit}` : '';
+      } catch (err) {
+        titleEl.textContent = 'Failed to load meme';
+        imgEl.alt = 'failed to load meme';
+        console.error('Error fetching meme:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('new-meme');
+      btn.addEventListener('click', fetchMeme);
+      fetchMeme();
+    });
+  </script>
+</body>
+</html>
